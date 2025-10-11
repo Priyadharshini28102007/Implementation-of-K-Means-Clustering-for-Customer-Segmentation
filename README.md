@@ -1,7 +1,7 @@
-# Implementation-of-SVM-For-Spam-Mail-Detection
+# Implementation-of-K-Means-Clustering-for-Customer-Segmentation
 
 ## AIM:
-To write a program to implement the SVM For Spam Mail Detection.
+To write a program to implement the K Means Clustering for Customer Segmentation.
 
 ## Equipments Required:
 1. Hardware – PCs
@@ -9,55 +9,71 @@ To write a program to implement the SVM For Spam Mail Detection.
 
 ## Algorithm
 
+1. Import pandas and mataplotlib.pyplot
+2. 2.Read the dataset and transform it
+3. 3.Import KMeans and fit the data in the model
+4.Plot the cluster graph
 
-1.Detect file encoding.
-2.Load and Inspect the data.
-3.Preprocessing the data.
-4.Convert text to numerial features.
-5.Train the model.
-6.Make predictions.
 
 ## Program:
 ```
 /*
-Program to implement the SVM For Spam Mail Detection..
-Developed by: Priyadharshini E
-RegisterNumber: 25014488
+Program to implement the K Means Clustering for Customer Segmentation.
+Developed by:Priyadharhini.E
+RegisterNumber:25014488 
 
 
-import chardet
-file='spam.csv'
-with open(file,'rb') as rawdata:
-    result=chardet.detect(rawdata.read(100000))
-result
-{'encoding': 'Windows=1252', 'confidence':0.7270322499829184,'language':''}
+
 import pandas as pd
-data=pd.read_csv("spam.csv",encoding='Windows-1252')
+import matplotlib.pyplot as plt
+data = pd.read_csv("Mall_Customers.csv")
 data.head()
 data.info()
 data.isnull().sum()
-x=data["v1"].values
-y=data["v2"].values
-from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
-from sklearn.feature_extraction.text import CountVectorizer
-cv=CountVectorizer()
-x_train=cv.fit_transform(x_train)
-x_test=cv.transform(x_test)
-from sklearn.svm import SVC
-svc=SVC()
-svc.fit(x_train,y_train)
-y_pred=svc.predict(x_test)
-y_pred
-from sklearn import metrics
-accuracy=metrics.accuracy_score(y_test,y_pred)
-accuracy
+from sklearn.cluster import KMeans
+wcss = []
+for i in range(1,11):
+    kmeans = KMeans(n_clusters = i,init = "k-means++")
+    kmeans.fit(data.iloc[:,3:])
+    wcss.append(kmeans.inertia_)
+
+plt.plot(range(1,11),wcss)
+plt.xlabel("No. of Clusters")
+plt.ylabel("wcss")
+plt.title("Elbow Method")
+km = KMeans(n_clusters = 5)
+km.fit(data.iloc[:,3:])
+
+y_pred = km.predict(data.iloc[:,3:])
+print(y_pred)
+data["cluster"] = y_pred
+df0 = data[data["cluster"]==0]
+df1 = data[data["cluster"]==1]
+df2 = data[data["cluster"]==2]
+df3 = data[data["cluster"]==3]
+df4 = data[data["cluster"]==4]
+plt.scatter(df0["Annual Income (k$)"],df0["Spending Score (1-100)"],c="red",label="cluster0")
+plt.scatter(df1["Annual Income (k$)"],df1["Spending Score (1-100)"],c="black",label="cluster1")
+plt.scatter(df2["Annual Income (k$)"],df2["Spending Score (1-100)"],c="blue",label="cluster2")
+plt.scatter(df3["Annual Income (k$)"],df3["Spending Score (1-100)"],c="green",label="cluster3")
+plt.scatter(df4["Annual Income (k$)"],df4["Spending Score (1-100)"],c="magenta",label="cluster4")
+plt.legend()
+plt.title("Customer Segments")
+
 
 /*
 ```
+
 ## Output:
-![SVM For Spam Mail Detection](sam.png)
-![Screenshot 2025-05-16 203818](https://github.com/user-attachments/assets/be505842-c302-4d08-b627-324c86eed1cf)
+![K Means Clustering for Customer Segmentation](sam.png)
+
+![Screenshot 2025-05-16 204914](https://github.com/user-attachments/assets/86a572be-6e5a-4203-917e-cdefe00c189e)
+
+![Screenshot 2025-05-16 204925](https://github.com/user-attachments/assets/840cdf81-05da-481b-977a-214ab8e38231)
+
+![Screenshot 2025-05-16 204935](https://github.com/user-attachments/assets/a53d5384-c3ba-4637-b8cd-0d36f2b57d58)
+
+
 
 ## Result:
-Thus the program to implement the SVM For Spam Mail Detection is written and verified using python programming.
+Thus the program to implement the K Means Clustering for Customer Segmentation is written and verified using python programming.
